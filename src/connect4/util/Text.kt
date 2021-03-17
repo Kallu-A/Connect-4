@@ -1,4 +1,4 @@
-package power4.util
+package connect4.util
 
 private const val reset = "\u001B[0m"
 private const val open = "\u001B[37m["

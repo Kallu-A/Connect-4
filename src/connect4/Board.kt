@@ -1,9 +1,9 @@
-package power4
+package connect4
 
-import power4.util.tagEnd
-import power4.util.tagError
-import power4.util.tagInput
-import power4.util.tagWarning
+import connect4.util.tagEnd
+import connect4.util.tagError
+import connect4.util.tagInput
+import connect4.util.tagWarning
 
 class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
 

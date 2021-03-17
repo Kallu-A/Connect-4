@@ -1,4 +1,4 @@
-package power4
+package connect4
 
 class Box( var color: Color? = null) {
 

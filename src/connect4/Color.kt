@@ -1,4 +1,4 @@
-package power4
+package connect4
 
 enum class Color(val string: String = "\u001B[37m-") {
     YELLOW("\u001B[33m⚫"),
