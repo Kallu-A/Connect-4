@@ -1,9 +1,9 @@
 package power4
 
-import tagEnd
-import tagError
-import tagInput
-import tagWarning
+import power4.util.tagEnd
+import power4.util.tagError
+import power4.util.tagInput
+import power4.util.tagWarning
 
 class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
 
@@ -30,6 +30,9 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
                 print(  (if (board[i][j].color?.string == null) "\u001B[37m -" else " " + board[i][j].color?.string)  + "\u001B[37m |")
             println()
         }
+        print(" |")
+        for (i in 0 until sizeY) print(" ${i + 1} |")
+        println()
     }
 
     /** get the play*/
@@ -72,7 +75,8 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
     private fun isPlayValidCol(column: Int) = column in 0 until sizeY && board[0][column].color == null
 
     /** return if the play can be make*/
-    private fun isPlayValidLine(line: Int) = line in 0 until sizeX
+    private fun isPlayRow(row: Int) = row in 0 until sizeX
+    private fun isPlayCol(column: Int) = column in 0 until sizeY
 
     /** change color when a play is did*/
     private fun colorChange(){
@@ -84,19 +88,16 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
     /** return if the game is finish*/
     private  fun isFinish(): Boolean{
         val winner = isWin()
-        if (winner == noOne) return !isDraw()
+        return if (winner == noOne) !isDraw()
         else {
             if (winner == winRed){
                 println(tagEnd("The winner is the player red"))
-                return false
-            }
-            else{
+                false
+            } else{
                 println(tagEnd("The winner is the player yellow"))
-                return false
+                false
             }
-
         }
-        return true
     }
 
     /** is game finish with draw*/
@@ -110,20 +111,21 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
 
     /** return noOne if not win winRed for the red and winYellow for the yellow*/
     private fun isWin(): Int {
-        var isFinish: Int = isFinishLine()
+        var isFinish: Int = isFinishRow()
 
-        if (isFinish == noOne){
+        if (isFinish == noOne) {
             isFinish = isFinishCol()
+            if (isFinish == noOne) isFinish = isFinishDiag()
         }
 
         return isFinish
     }
 
     /** return if the game is finish in line*/
-    private fun isFinishLine(): Int{
+    private fun isFinishRow(): Int{
         for (i in 0 until sizeX)
             for (j in 0 until sizeY)
-                if (isPlayValidCol(j+3)){
+                if (isPlayCol(j+3)){
                     if (board[i][j].color == board[i][j+1].color  && board[i][j+1].color ==  board[i][j+2].color
                         && board[i][j+2].color == board[i][j+3].color && board[i][j].color != null)
                         return if (board[i][j].isRed()) winRed else winYellow
@@ -131,10 +133,11 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
         return noOne
     }
 
+    /** return if the game is finish in line*/
     private fun isFinishCol(): Int{
         for (i in 0 until sizeX)
             for (j in 0 until sizeY)
-                if (isPlayValidLine(i+3)){
+                if (isPlayRow(i+3)){
                     if (board[i][j].color == board[i+1][j].color && board[i+1][j].color == board[i+2][j].color
                         && board[i+2][j].color == board[i+3][j].color && board[i][j].color != null)
                         return if (board[i][j].isRed()) winRed else winYellow
@@ -142,6 +145,25 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
         return noOne
     }
 
+    /** return if the game is finish in diagonal*/
+    private fun isFinishDiag(): Int{
+        for (row in 0 until sizeX)
+            for (col in 0 until sizeY){
+                // diag n°1
+                if (isPlayCol(col + 3) && isPlayRow(row + 3))
+                    if ( board[row][col].color == board[row+1][col+1].color && board[row+1][col+1].color == board[row+2][col+2].color &&
+                        board[row+2][col+2].color == board[row+3][col+3].color && board[row][col].color != null )
+                        return if (board[row][col].isRed()) winRed else winYellow
+                // diag n°2
+                if (isPlayCol(col - 3) && isPlayRow(row + 3)){
+                    if ( board[row][col].color == board[row+1][col-1].color && board[row+1][col-1].color == board[row+2][col-2].color &&
+                        board[row+2][col-2].color ==  board[row+3][col-3].color && board[row][col].color != null)
+                        return if (board[row][col].isRed()) winRed else winYellow
+                }
+            }
+
+        return noOne
+    }
 
     companion object{
         private const val winRed = 1
