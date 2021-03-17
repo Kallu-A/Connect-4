@@ -19,6 +19,7 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
             print(tagInput("Put the column you want to play"))
             tryPlay(getPlay())
         } while (isFinish())
+        showBoard()
     }
 
     /**show the board*/
@@ -85,10 +86,15 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
         val winner = isWin()
         if (winner == noOne) return !isDraw()
         else {
-            if (winner == winRed)
+            if (winner == winRed){
                 println(tagEnd("The winner is the player red"))
-            else
+                return false
+            }
+            else{
                 println(tagEnd("The winner is the player yellow"))
+                return false
+            }
+
         }
         return true
     }
@@ -128,9 +134,9 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
     private fun isFinishCol(): Int{
         for (i in 0 until sizeX)
             for (j in 0 until sizeY)
-                if (isPlayValidLine(j+3)){
-                    if (board[i][j].color == board[i][j+1].color  && board[i][j+1].color ==  board[i][j+2].color
-                        && board[i][j+2].color == board[i][j+3].color && board[i][j].color != null)
+                if (isPlayValidLine(i+3)){
+                    if (board[i][j].color == board[i+1][j].color && board[i+1][j].color == board[i+2][j].color
+                        && board[i+2][j].color == board[i+3][j].color && board[i][j].color != null)
                         return if (board[i][j].isRed()) winRed else winYellow
                 } else break
         return noOne
