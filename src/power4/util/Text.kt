@@ -3,7 +3,6 @@ package power4.util
 private const val reset = "\u001B[0m"
 private const val open = "\u001B[37m["
 private const val close = "\u001B[37m] "
-
 @JvmOverloads
 fun tagError(message: String = "") = "$open\u001B[31mERROR$close$reset$message"
 @JvmOverloads
