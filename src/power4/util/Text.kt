@@ -17,4 +17,4 @@ fun tagComment(message: String = "") = "${open}COMMENT$close$message"
 @JvmOverloads //work better with print
 fun tagInput(message: String = "") = "$open\u001B[35mINPUT$close$message \n \u001B[35m--> $reset"
 @JvmOverloads
-fun tagEnd(message: String = "") = "$open\u001B[35mEND$close\u001B[31m$message"
+fun tagEnd(message: String = "") = "$open\u001B[36mEND$close\u001B[31m$message"

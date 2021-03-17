@@ -50,7 +50,7 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
             println(tagError("Use an Integer"))
             return
         }
-        if (isPlayValid(column)) {
+        if (isPlayValidCol(column)) {
             play(column)
             return
         }
@@ -68,8 +68,10 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
     }
 
     /** return if the play can be make*/
-    private fun isPlayValid(column: Int) = column in 0 until sizeY && board[0][column].color == null
+    private fun isPlayValidCol(column: Int) = column in 0 until sizeY && board[0][column].color == null
 
+    /** return if the play can be make*/
+    private fun isPlayValidLine(line: Int) = line in 0 until sizeX
 
     /** change color when a play is did*/
     private fun colorChange(){
@@ -81,9 +83,9 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
     /** return if the game is finish*/
     private  fun isFinish(): Boolean{
         val winner = isWin()
-        if (winner == 0) return isDraw()
+        if (winner == noOne) return !isDraw()
         else {
-            if (winner == 1)
+            if (winner == winRed)
                 println(tagEnd("The winner is the player red"))
             else
                 println(tagEnd("The winner is the player yellow"))
@@ -100,9 +102,45 @@ class Board(private val sizeX: Int = 7, private val sizeY: Int = 6) {
         return true
     }
 
-    /** return 0 if not win 1 for the red and 2 for the yellow*/
+    /** return noOne if not win winRed for the red and winYellow for the yellow*/
     private fun isWin(): Int {
-        return 0
+        var isFinish: Int = isFinishLine()
+
+        if (isFinish == noOne){
+            isFinish = isFinishCol()
+        }
+
+        return isFinish
+    }
+
+    /** return if the game is finish in line*/
+    private fun isFinishLine(): Int{
+        for (i in 0 until sizeX)
+            for (j in 0 until sizeY)
+                if (isPlayValidCol(j+3)){
+                    if (board[i][j].color == board[i][j+1].color  && board[i][j+1].color ==  board[i][j+2].color
+                        && board[i][j+2].color == board[i][j+3].color && board[i][j].color != null)
+                        return if (board[i][j].isRed()) winRed else winYellow
+                } else break
+        return noOne
+    }
+
+    private fun isFinishCol(): Int{
+        for (i in 0 until sizeX)
+            for (j in 0 until sizeY)
+                if (isPlayValidLine(j+3)){
+                    if (board[i][j].color == board[i][j+1].color  && board[i][j+1].color ==  board[i][j+2].color
+                        && board[i][j+2].color == board[i][j+3].color && board[i][j].color != null)
+                        return if (board[i][j].isRed()) winRed else winYellow
+                } else break
+        return noOne
+    }
+
+
+    companion object{
+        private const val winRed = 1
+        private const val winYellow = 2
+        private const val noOne = 0
     }
 
 }
